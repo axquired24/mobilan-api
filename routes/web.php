@@ -28,5 +28,5 @@ Route::get('/home', 'HomeController@index');
 Route::get('telegram/update', 'TelegramController@getUpdates');
 Route::get('telegram/send',  'TelegramController@getSendMessage');
 Route::post('telegram/send', 'TelegramController@postSendMessage');
-//
-Route::post('noapi/telegram/ajax', 'TelegramController@postSendAjax');
+// Route Telegram & Save Mober - Adser
+Route::post('noapi/telegram/ajax/{mober?}', 'TelegramController@postSendAjax');

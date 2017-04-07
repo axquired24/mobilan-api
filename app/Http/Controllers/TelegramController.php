@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Validator;
 use Telegram\Bot\Laravel\Facades\Telegram;
 
 use App\RegAdser;
+use App\RegMober;
 
 class TelegramController extends Controller
 {
@@ -70,34 +71,49 @@ class TelegramController extends Controller
             ->with('message', 'Message sent');
     }    
 
-    public function postSendAjax(Request $request)
+    public function postSendAjax(Request $request, $mober=null)
     {
         $origin = $request['originAllowed'];
         header('Access-Control-Allow-Origin: '.$origin);
         header('Access-Control-Allow-Methods: POST');
         header('Access-Control-Max-Age: 1000');
-        $adser_name      = $request['adserName'];
-        // return $adser_name;
-        $adser_contact   = $request['adserContact'];
-        $adser_package   = $request['adserPackage'];
-        $message         = '#NEWadser' .PHP_EOL.
-                            'Perusahaan: <b>'.$adser_name.'</b>' .PHP_EOL.
-                            'Paket disukai: <b>'.$adser_package.'</b>' .PHP_EOL.
-                            'Kontak: '.$adser_contact;
 
-        // // Cek Duplicate
-        // $cek    = RegAdser::where([
-        //                         ['name' => $adser_name],
-        //                         ['contact' => $adser_contact],
-        //                         ['package' => $adser_package],
-        //                         ])->first();
-        // if(! isset($cek->id)) {
-            $adser  = new RegAdser();
-            $adser->name       = $adser_name;
-            $adser->contact    = $adser_contact;
-            $adser->package    = addslashes($adser_package);
-            $adser->save();
-        // }
+        if($mober != 'mober') {            
+            $adser_name      = $request['adserName'];
+            // return $adser_name;
+            $adser_contact   = $request['adserContact'];
+            $adser_package   = $request['adserPackage'];
+            $message         = '#NEWadser' .PHP_EOL.
+                                'Perusahaan: <b>'.$adser_name.'</b>' .PHP_EOL.
+                                'Paket disukai: <b>'.$adser_package.'</b>' .PHP_EOL.
+                                'Kontak: '.$adser_contact;
+
+            // // Cek Duplicate
+            // $cek    = RegAdser::where([
+            //                         ['name' => $adser_name],
+            //                         ['contact' => $adser_contact],
+            //                         ['package' => $adser_package],
+            //                         ])->first();
+            // if(! isset($cek->id)) {
+                $adser  = new RegAdser();
+                $adser->name       = $adser_name;
+                $adser->contact    = $adser_contact;
+                $adser->package    = addslashes($adser_package);
+                $adser->save();
+            // }
+        } else {
+            $mober_name      = $request['moberName'];
+            // return $mober_name;
+            $mober_contact   = $request['moberContact'];
+            $message         = '#NEWmober' .PHP_EOL.
+                                'Nama: <b>'.$mober_name.'</b>' .PHP_EOL.
+                                'Kontak: '.$mober_contact;
+
+            $mober  = new RegMober();
+            $mober->name       = $mober_name;
+            $mober->contact    = $mober_contact;
+            $mober->save();
+        }
 
         $send = Telegram::sendMessage([
             'chat_id' => $this->group_chat_id,
